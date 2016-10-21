@@ -1,7 +1,7 @@
 // Protocol Buffers for Go with Gadgets
 //
 // Copyright (c) 2015, The GoGo Authors.  rights reserved.
-// http://github.com/gogo/protobuf
+// http://github.com/bsm/gogo-protobuf
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -80,4 +80,10 @@ func TurnOffNullableForNativeTypesWithoutDefaultsOnly(field *descriptor.FieldDes
 		return
 	}
 	SetBoolFieldOption(gogoproto.E_Nullable, false)(field)
+}
+
+func TurnOffNullableForRepeatedTypes(field *descriptor.FieldDescriptorProto) {
+	if field.IsRepeated() {
+		SetBoolFieldOption(gogoproto.E_Nullable, false)(field)
+	}
 }

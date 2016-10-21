@@ -1,7 +1,7 @@
 // Protocol Buffers for Go with Gadgets
 //
 // Copyright (c) 2013, The GoGo Authors. All rights reserved.
-// http://github.com/gogo/protobuf
+// http://github.com/bsm/gogo-protobuf
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -48,11 +48,11 @@ The gostring plugin also generates a test given it is enabled using one of the f
 
 Let us look at:
 
-  github.com/gogo/protobuf/test/example/example.proto
+  github.com/bsm/gogo-protobuf/test/example/example.proto
 
 Btw all the output can be seen at:
 
-  github.com/gogo/protobuf/test/example/*
+  github.com/bsm/gogo-protobuf/test/example/*
 
 The following message:
 
@@ -61,7 +61,7 @@ The following message:
   message A {
 	optional string Description = 1 [(gogoproto.nullable) = false];
 	optional int64 Number = 2 [(gogoproto.nullable) = false];
-	optional bytes Id = 3 [(gogoproto.customtype) = "github.com/gogo/protobuf/test/custom.Uuid", (gogoproto.nullable) = false];
+	optional bytes Id = 3 [(gogoproto.customtype) = "github.com/bsm/gogo-protobuf/test/custom.Uuid", (gogoproto.nullable) = false];
   }
 
 given to the gostring plugin, will generate the following code:
@@ -97,10 +97,11 @@ not print their values, while the generated GoString method will always print al
 package gostring
 
 import (
-	"github.com/gogo/protobuf/gogoproto"
-	"github.com/gogo/protobuf/protoc-gen-gogo/generator"
 	"strconv"
 	"strings"
+
+	"github.com/bsm/gogo-protobuf/protoc-gen-gogo/generator"
+	"github.com/gogo/protobuf/gogoproto"
 )
 
 type gostring struct {
