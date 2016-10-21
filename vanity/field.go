@@ -73,8 +73,35 @@ func TurnOffNullable(field *descriptor.FieldDescriptorProto) {
 }
 
 func TurnOffNullableForNativeTypesWithoutDefaultsOnly(field *descriptor.FieldDescriptorProto) {
-	if field.IsRepeated() || field.IsMessage() {
+	if field.IsRepeated() || field.IsMessage() || field.IsBytes() {
 		return
+	}
+	if field.DefaultValue != nil {
+		switch field.GetType() {
+		case descriptor.FieldDescriptorProto_TYPE_FLOAT,
+			descriptor.FieldDescriptorProto_TYPE_DOUBLE:
+			if val := field.GetDefaultValue(); val == "0" || val == "0.0" {
+				field.DefaultValue = nil
+			}
+		case descriptor.FieldDescriptorProto_TYPE_UINT32,
+			descriptor.FieldDescriptorProto_TYPE_UINT64,
+			descriptor.FieldDescriptorProto_TYPE_ENUM,
+			descriptor.FieldDescriptorProto_TYPE_INT32,
+			descriptor.FieldDescriptorProto_TYPE_INT64,
+			descriptor.FieldDescriptorProto_TYPE_FIXED32,
+			descriptor.FieldDescriptorProto_TYPE_SFIXED32,
+			descriptor.FieldDescriptorProto_TYPE_FIXED64,
+			descriptor.FieldDescriptorProto_TYPE_SFIXED64,
+			descriptor.FieldDescriptorProto_TYPE_SINT32,
+			descriptor.FieldDescriptorProto_TYPE_SINT64:
+			if val := field.GetDefaultValue(); val == "0" {
+				field.DefaultValue = nil
+			}
+		case descriptor.FieldDescriptorProto_TYPE_BOOL:
+			if val := field.GetDefaultValue(); val == "false" {
+				field.DefaultValue = nil
+			}
+		}
 	}
 	if field.DefaultValue != nil {
 		return
@@ -82,8 +109,8 @@ func TurnOffNullableForNativeTypesWithoutDefaultsOnly(field *descriptor.FieldDes
 	SetBoolFieldOption(gogoproto.E_Nullable, false)(field)
 }
 
-func TurnOffNullableForRepeatedTypes(field *descriptor.FieldDescriptorProto) {
-	if field.IsRepeated() {
+func TurnOffNullableForRepeatedMessageTypes(field *descriptor.FieldDescriptorProto) {
+	if field.IsRepeated() && field.IsMessage() {
 		SetBoolFieldOption(gogoproto.E_Nullable, false)(field)
 	}
 }
