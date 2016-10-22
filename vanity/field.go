@@ -78,6 +78,8 @@ func TurnOffNullableForNativeTypesWithoutDefaultsOnly(field *descriptor.FieldDes
 	}
 	if field.DefaultValue != nil {
 		switch field.GetType() {
+		case descriptor.FieldDescriptorProto_TYPE_ENUM:
+			field.DefaultValue = nil
 		case descriptor.FieldDescriptorProto_TYPE_FLOAT,
 			descriptor.FieldDescriptorProto_TYPE_DOUBLE:
 			if val := field.GetDefaultValue(); val == "0" || val == "0.0" {
@@ -85,7 +87,6 @@ func TurnOffNullableForNativeTypesWithoutDefaultsOnly(field *descriptor.FieldDes
 			}
 		case descriptor.FieldDescriptorProto_TYPE_UINT32,
 			descriptor.FieldDescriptorProto_TYPE_UINT64,
-			descriptor.FieldDescriptorProto_TYPE_ENUM,
 			descriptor.FieldDescriptorProto_TYPE_INT32,
 			descriptor.FieldDescriptorProto_TYPE_INT64,
 			descriptor.FieldDescriptorProto_TYPE_FIXED32,
