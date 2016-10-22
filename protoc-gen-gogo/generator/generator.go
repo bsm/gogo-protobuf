@@ -1,7 +1,7 @@
 // Protocol Buffers for Go with Gadgets
 //
 // Copyright (c) 2013, The GoGo Authors. All rights reserved.
-// http://github.com/bsm/gogo-protobuf
+// http://github.com/gogo/protobuf
 //
 // Go support for Protocol Buffers - Google's data interchange format
 //
@@ -58,10 +58,10 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	plugin "github.com/bsm/gogo-protobuf/protoc-gen-gogo/plugin"
 	"github.com/gogo/protobuf/gogoproto"
 	"github.com/gogo/protobuf/proto"
 	descriptor "github.com/gogo/protobuf/protoc-gen-gogo/descriptor"
+	plugin "github.com/gogo/protobuf/protoc-gen-gogo/plugin"
 )
 
 // generatedCodeVersion indicates a version of the generated code.

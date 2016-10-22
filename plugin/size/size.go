@@ -1,7 +1,7 @@
 // Protocol Buffers for Go with Gadgets
 //
 // Copyright (c) 2013, The GoGo Authors. All rights reserved.
-// http://github.com/bsm/gogo-protobuf
+// http://github.com/gogo/protobuf
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -50,11 +50,11 @@ And a benchmark given it is enabled using one of the following extensions:
 
 Let us look at:
 
-  github.com/bsm/gogo-protobuf/test/example/example.proto
+  github.com/gogo/protobuf/test/example/example.proto
 
 Btw all the output can be seen at:
 
-  github.com/bsm/gogo-protobuf/test/example/*
+  github.com/gogo/protobuf/test/example/*
 
 The following message:
 
@@ -63,7 +63,7 @@ The following message:
   message B {
 	option (gogoproto.description) = true;
 	optional A A = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true];
-	repeated bytes G = 2 [(gogoproto.customtype) = "github.com/bsm/gogo-protobuf/test/custom.Uint128", (gogoproto.nullable) = false];
+	repeated bytes G = 2 [(gogoproto.customtype) = "github.com/gogo/protobuf/test/custom.Uint128", (gogoproto.nullable) = false];
   }
 
 given to the size plugin, will generate the following code:
@@ -246,7 +246,7 @@ func (p *size) generateField(proto3 bool, file *generator.FileDescriptor, messag
 			p.P(`n+=`, strconv.Itoa(key), `+sov`, p.localName, `(uint64(len(m.`, fieldname, `)*8))`, `+len(m.`, fieldname, `)*8`)
 		} else if repeated {
 			p.P(`n+=`, strconv.Itoa(key+8), `*len(m.`, fieldname, `)`)
-		} else if proto3 {
+		} else if proto3 || !nullable {
 			p.P(`if m.`, fieldname, ` != 0 {`)
 			p.In()
 			p.P(`n+=`, strconv.Itoa(key+8))
@@ -264,7 +264,7 @@ func (p *size) generateField(proto3 bool, file *generator.FileDescriptor, messag
 			p.P(`n+=`, strconv.Itoa(key), `+sov`, p.localName, `(uint64(len(m.`, fieldname, `)*4))`, `+len(m.`, fieldname, `)*4`)
 		} else if repeated {
 			p.P(`n+=`, strconv.Itoa(key+4), `*len(m.`, fieldname, `)`)
-		} else if proto3 {
+		} else if proto3 || !nullable {
 			p.P(`if m.`, fieldname, ` != 0 {`)
 			p.In()
 			p.P(`n+=`, strconv.Itoa(key+4))
@@ -294,7 +294,7 @@ func (p *size) generateField(proto3 bool, file *generator.FileDescriptor, messag
 			p.P(`n+=`, strconv.Itoa(key), `+sov`, p.localName, `(uint64(e))`)
 			p.Out()
 			p.P(`}`)
-		} else if proto3 {
+		} else if proto3 || !nullable {
 			p.P(`if m.`, fieldname, ` != 0 {`)
 			p.In()
 			p.P(`n+=`, strconv.Itoa(key), `+sov`, p.localName, `(uint64(m.`, fieldname, `))`)
@@ -310,7 +310,7 @@ func (p *size) generateField(proto3 bool, file *generator.FileDescriptor, messag
 			p.P(`n+=`, strconv.Itoa(key), `+sov`, p.localName, `(uint64(len(m.`, fieldname, `)))`, `+len(m.`, fieldname, `)*1`)
 		} else if repeated {
 			p.P(`n+=`, strconv.Itoa(key+1), `*len(m.`, fieldname, `)`)
-		} else if proto3 {
+		} else if proto3 || !nullable {
 			p.P(`if m.`, fieldname, ` {`)
 			p.In()
 			p.P(`n+=`, strconv.Itoa(key+1))
@@ -329,7 +329,7 @@ func (p *size) generateField(proto3 bool, file *generator.FileDescriptor, messag
 			p.P(`n+=`, strconv.Itoa(key), `+l+sov`, p.localName, `(uint64(l))`)
 			p.Out()
 			p.P(`}`)
-		} else if proto3 {
+		} else if proto3 || !nullable {
 			p.P(`l=len(m.`, fieldname, `)`)
 			p.P(`if l > 0 {`)
 			p.In()
@@ -427,11 +427,7 @@ func (p *size) generateField(proto3 bool, file *generator.FileDescriptor, messag
 					sum = append(sum, `l`)
 				} else {
 					p.P(`l = 0`)
-					if proto3 {
-						p.P(`if len(v) > 0 {`)
-					} else {
-						p.P(`if v != nil {`)
-					}
+					p.P(`if len(v) > 0 {`)
 					p.In()
 					p.P(`l = `, strconv.Itoa(valueKeySize), ` + len(v)+sov`+p.localName+`(uint64(len(v)))`)
 					p.Out()
@@ -505,7 +501,7 @@ func (p *size) generateField(proto3 bool, file *generator.FileDescriptor, messag
 				p.P(`n+=`, strconv.Itoa(key), `+l+sov`, p.localName, `(uint64(l))`)
 				p.Out()
 				p.P(`}`)
-			} else if proto3 {
+			} else if proto3 || !nullable {
 				p.P(`l=len(m.`, fieldname, `)`)
 				p.P(`if l > 0 {`)
 				p.In()
@@ -545,7 +541,7 @@ func (p *size) generateField(proto3 bool, file *generator.FileDescriptor, messag
 			p.P(`n+=`, strconv.Itoa(key), `+soz`, p.localName, `(uint64(e))`)
 			p.Out()
 			p.P(`}`)
-		} else if proto3 {
+		} else if proto3 || !nullable {
 			p.P(`if m.`, fieldname, ` != 0 {`)
 			p.In()
 			p.P(`n+=`, strconv.Itoa(key), `+soz`, p.localName, `(uint64(m.`, fieldname, `))`)
