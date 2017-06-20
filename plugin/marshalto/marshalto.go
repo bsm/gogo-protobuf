@@ -749,7 +749,7 @@ func (p *marshalto) generateField(proto3 bool, numGen NumGen, file *generator.Fi
 			p.P(`i++`)
 			p.Out()
 			p.P(`}`)
-		} else if proto3 {
+		} else if proto3 || !nullable {
 			p.P(`if m.`, fieldname, ` {`)
 			p.In()
 			p.encodeKey(fieldNumber, wireType)
